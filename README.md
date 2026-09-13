@@ -1,28 +1,85 @@
-# Smart Pollination Monitoring System
+<div align="center">
 
-AI + IoT + LoRa based bee-pollination monitoring project for identifying acoustic bee activity and reporting field observations remotely.
+<img src="images/banner.svg" alt="Smart Pollination Monitoring System" width="900"/>
 
-> **Project evidence:** This repository now includes a visual evidence board built from the supplied prototype/report images. See [`images/project-evidence.jpg`](images/project-evidence.jpg).
+### AI + IoT + LoRa + Bioacoustic Sensing
 
-## Project purpose
+**An end-to-end prototype for monitoring acoustic bee activity and reporting observations remotely.**
 
-Pollinating insects are important to crop production, but direct continuous observation of bee activity over a field is difficult. This project uses acoustic sensing as a practical way to monitor activity around a selected observation point. An INMP441 MEMS microphone captures environmental sound, an ESP32 provides the embedded acquisition/control layer, and an SX1278 LoRa link transports compact classification data to a receiver. A CNN-based audio classifier separates **Bee Activity** from **Background Noise**.
+![Python](https://img.shields.io/badge/Python-3.x-3776AB?style=for-the-badge&logo=python&logoColor=white)
+![ESP32](https://img.shields.io/badge/ESP32-IoT-E7352C?style=for-the-badge&logo=espressif&logoColor=white)
+![LoRa](https://img.shields.io/badge/LoRa-SX1278-0B7285?style=for-the-badge)
+![AI](https://img.shields.io/badge/AI-CNN-F4C95D?style=for-the-badge)
+![License](https://img.shields.io/badge/License-MIT-2F855A?style=for-the-badge)
 
-The project is designed as a complete sensing-to-monitoring pipeline rather than as a standalone machine-learning notebook:
+</div>
 
-**Acoustic sensing → preprocessing → Mel-spectrogram → CNN classification → LoRa transmission → receiver/gateway → Blynk monitoring**
+---
 
-## Main objectives
+## 🐝 Project at a glance
 
-- Continuously observe acoustic activity associated with bees.
-- Reduce the effect of environmental/background noise on classification.
-- Convert audio into a fixed-size Mel-spectrogram representation.
-- Classify the representation with a three-stage CNN.
-- Communicate classification information through an SX1278 LoRa link.
-- Provide a remote monitoring interface through Blynk.
-- Keep the system modular so sensing, AI, radio and monitoring can be developed and tested independently.
+Pollinating insects are important to crop production, but continuous manual observation of bee activity is difficult. This project explores **acoustic sensing + machine learning + long-range IoT communication** as a practical monitoring pipeline.
 
-## End-to-end architecture
+An **INMP441 MEMS microphone** captures environmental sound, an **ESP32** handles embedded acquisition/control, an **SX1278 LoRa** link transports compact classification data, and a **CNN** separates **Bee Activity** from **Background Noise**. The result is surfaced through a remote **Blynk** monitoring layer.
+
+> **Core idea:** turn an acoustic event into a useful remote field observation.
+
+### 🔎 Pipeline
+
+```text
+Acoustic sensing
+      ↓
+Audio preprocessing
+      ↓
+Mel-spectrogram
+      ↓
+CNN classification
+      ↓
+LoRa transmission
+      ↓
+ESP32 receiver / gateway
+      ↓
+Blynk monitoring
+```
+
+---
+
+## ✨ What makes this project interesting
+
+<table>
+<tr>
+<td width="50%">
+
+### 🎙️ Bioacoustic sensing
+Digital audio from an INMP441 microphone is used as the sensing signal for bee-activity analysis.
+
+</td>
+<td width="50%">
+
+### 🧠 AI classification
+A three-stage CNN processes fixed-size Mel-spectrogram representations and classifies two acoustic classes.
+
+</td>
+</tr>
+<tr>
+<td>
+
+### 📡 Long-range communication
+SX1278 LoRa is used to move compact classification information between the field node and receiver.
+
+</td>
+<td>
+
+### 📱 Remote monitoring
+Blynk provides a simple IoT layer for observing the latest classification information remotely.
+
+</td>
+</tr>
+</table>
+
+---
+
+## 🧩 End-to-end architecture
 
 ```text
                   FIELD / APIARY
@@ -72,8 +129,7 @@ The project is designed as a complete sensing-to-monitoring pipeline rather than
                        │
                        ▼
               ┌─────────────────┐
-              │ Monitoring layer│
-              │ / Blynk         │
+              │ Blynk monitoring│
               └─────────────────┘
 ```
 
@@ -89,25 +145,15 @@ The project is designed as a complete sensing-to-monitoring pipeline rather than
 | Receiver/gateway | Receive and parse LoRa packets |
 | Blynk | Remote visualization and monitoring |
 
-The repository does not claim that the CNN is running natively on the ESP32 unless an embedded deployment of the trained model is separately added and validated. The supplied Python pipeline is the reference training/inference implementation.
+The repository does not claim that the CNN runs natively on the ESP32 unless an embedded deployment of the trained model is separately added and validated. The supplied Python pipeline is the reference training/inference implementation.
 
-## Project evidence
+---
 
-The supplied project materials contain prototype photographs and result figures. A compact, repository-friendly board is included here so visitors can see the physical implementation and software outputs without downloading the academic report.
-
-![Project evidence board](images/project-evidence.jpg)
-
-**Shown in the board:** hardware prototype, LCD bee-detection output, Blynk monitoring, training-accuracy curve, Mel-spectrogram and confusion matrix.
-
-For context on how these artifacts relate to the system, see [`documentation/project-materials.md`](documentation/project-materials.md).
-
-> **Evidence policy:** screenshots and plots are preserved as project artifacts. They are not presented as independently reproduced benchmarks. Final performance claims should be tied to a documented dataset, split, model version and test conditions.
-
-## AI model
+## 🧠 AI model
 
 ### Input representation
 
-The preprocessing pipeline uses:
+The documented preprocessing pipeline uses:
 
 - Mono audio
 - Target sample rate: **16 kHz**
@@ -120,8 +166,6 @@ The preprocessing stage performs amplitude normalization and deterministic spect
 
 ### CNN architecture
 
-The training implementation contains three convolutional stages:
-
 1. `Conv2D(16, 3×3)` + ReLU + max pooling
 2. `Conv2D(32, 3×3)` + ReLU + max pooling
 3. `Conv2D(64, 3×3)` + ReLU + max pooling
@@ -130,16 +174,12 @@ The training implementation contains three convolutional stages:
 6. Dropout of 0.30
 7. Two-unit softmax output
 
-The output classes are:
-
 ```text
 0 = Background Noise
 1 = Bee Activity
 ```
 
 ### Training configuration
-
-The implementation uses:
 
 - Stratified 80/20 train-validation split
 - Random seed: 42
@@ -149,38 +189,45 @@ The implementation uses:
 - Default batch size: 32
 - Shuffling during training
 
-Accuracy values are generated by the actual training run. No accuracy, precision, recall or F1 value is hard-coded into this repository.
+Accuracy and evaluation figures should be treated as **experiment artifacts from the supplied project material**, not as independently reproduced benchmarks.
 
-## Dataset
+---
 
-The project uses two acoustic classes:
+## 📊 Project results
 
-```text
-Bee Activity/
-Background Noise/
-```
+The repository includes the project's **actual supplied ML result figures** as visual artifacts when they are added to the `images/ml/` directory:
 
-The repository intentionally does not include a fabricated dataset. Put the recordings that you actually collected or are licensed to use under a local dataset directory. See `ai_model/dataset_info.md` for the required structure and recording metadata.
+- Training / validation accuracy curve
+- Bee Mel-spectrogram
+- Audio waveform
+- Confusion matrix
+- Classification report
 
-## Hardware
+These figures are kept separately from the hardware and IoT screenshots so the README remains clean and easy to scan.
 
-The documented hardware is:
+---
+
+## 🔩 Hardware
+
+The documented prototype uses:
 
 - ESP32 development board
 - INMP441 digital MEMS microphone
 - SX1278 LoRa transceiver module
-- Regulated power supply appropriate for the selected ESP32 and SX1278 boards
+- Regulated power supply appropriate for the selected boards
 - Interconnects and an enclosure suitable for field deployment
 
 ### Hardware principle
 
-The INMP441 supplies digital audio to the ESP32 through I2S. The ESP32 node is responsible for acquisition and communication. Classification data is transported using the SX1278 LoRa radio. A second SX1278-equipped ESP32 acts as the receiving node.
+The INMP441 supplies digital audio to the ESP32 through I2S. The ESP32 node handles acquisition and communication. Classification data is transported through the SX1278 LoRa radio, while a second SX1278-equipped ESP32 acts as the receiving node.
 
-Exact GPIO values are **not stated as universal facts** because they depend on the ESP32 board variant and the wiring used in the physical prototype. Confirm the wiring against the actual prototype before flashing firmware.
+> Exact GPIO values are not stated as universal facts because they depend on the ESP32 board variant and the wiring used in the physical prototype. Verify the wiring against the actual hardware before flashing firmware.
 
-## LoRa packet
+---
 
-The firmware uses a structured application payload:
+## 📡 LoRa packet format
+
+The application payload follows:
 
 ```text
 BEEWATCH,<class>,<confidence>,<node_id>,<sequence>
@@ -188,9 +235,11 @@ BEEWATCH,<class>,<confidence>,<node_id>,<sequence>
 
 The receiver validates the packet prefix, extracts the fields, and reports the received values through the serial monitor. Confidence is represented as a decimal value between 0 and 1 by the application layer.
 
-## Blynk monitoring
+---
 
-The Blynk layer is documented separately in `blynk/`. The dashboard is intended to expose the information that is useful during a field deployment, including:
+## 📱 Blynk monitoring
+
+The Blynk layer is documented separately in `blynk/`. The monitoring interface is intended to expose useful deployment information such as:
 
 - Latest bee/background classification
 - Classification confidence
@@ -200,9 +249,11 @@ The Blynk layer is documented separately in `blynk/`. The dashboard is intended 
 - Received signal information when supplied by the receiver
 - Activity history/trend when historical storage is enabled
 
-Blynk authentication tokens and Wi-Fi credentials must remain outside Git. Use the local configuration procedure in `blynk/configuration/blynk_setup.md`.
+Keep Blynk authentication tokens and Wi-Fi credentials outside Git. Use the configuration guide in `blynk/configuration/blynk_setup.md`.
 
-## Repository structure
+---
+
+## 📁 Repository structure
 
 ```text
 smart-pollination-monitoring/
@@ -249,13 +300,17 @@ smart-pollination-monitoring/
 │   ├── project-materials.md
 │   └── references.md
 └── images/
-    ├── README.md
-    └── project-evidence.jpg
+    ├── banner.svg
+    ├── hardware/
+    ├── ml/
+    └── blynk/
 ```
 
-## Software setup
+---
 
-Python 3.10+ is recommended for the training/inference environment. Create a virtual environment and install the pinned minimum dependencies listed in `requirements.txt`.
+## 🚀 Quick start
+
+### 1. Create the Python environment
 
 ```bash
 python -m venv .venv
@@ -273,49 +328,37 @@ Linux/macOS:
 source .venv/bin/activate
 ```
 
-Install:
+Install dependencies:
 
 ```bash
 pip install -r requirements.txt
 ```
 
-## Preprocess the actual dataset
+### 2. Preprocess the actual dataset
 
 ```bash
 python ai_model/preprocessing/preprocessing.py --input-dir "data/dataset" --output-dir "data/processed"
 ```
 
-The script creates one `.npy` Mel-spectrogram per supported audio recording and preserves the two class directories.
-
-## Train the CNN
+### 3. Train the CNN
 
 ```bash
 python ai_model/training/train.py --data-dir "data/processed" --output "ai_model/model/beewatch_cnn.keras"
 ```
 
-The trained model and class list are generated by the training run. Model binaries are excluded from normal source control by `.gitignore` unless deliberately force-added.
-
-## Run inference on a real recording
+### 4. Run inference
 
 ```bash
 python ai_model/inference/inference.py --model "ai_model/model/beewatch_cnn.keras" --input "path/to/recording.wav"
 ```
 
-The inference program performs the same preprocessing used by the model and reports the predicted class and confidence.
+### 5. Prepare ESP32 + LoRa
 
-## Firmware preparation
+Open the required sketch in Arduino IDE or PlatformIO, install ESP32 board support and the SX1278/LoRa library used by the sketch, then verify the GPIO definitions against the actual hardware.
 
-Open the required sketch in Arduino IDE or PlatformIO, install the ESP32 board support package and the SX1278/LoRa library used by the sketch, then verify the GPIO definitions against the actual hardware.
+---
 
-### Transmitter
-
-`firmware/esp32_transmitter/transmitter.ino` provides the LoRa transmission side. The node identifier, radio frequency and SPI/control pins are configuration parameters and must match the hardware.
-
-### Receiver
-
-`firmware/esp32_receiver/receiver.ino` provides the LoRa reception and packet parsing side. The receiver should use the same LoRa frequency and radio wiring as the transmitter.
-
-## Field deployment sequence
+## 🧪 Field deployment sequence
 
 1. Mount the INMP441 at the observation location.
 2. Connect the microphone to the ESP32 I2S interface.
@@ -324,44 +367,52 @@ Open the required sketch in Arduino IDE or PlatformIO, install the ESP32 board s
 5. Label recordings as bee activity or background noise.
 6. Preprocess the recordings using the repository pipeline.
 7. Train and validate the CNN using the actual dataset.
-8. Evaluate the model on recordings not used for training.
-9. Configure the LoRa transmitter and receiver with matching radio settings.
+8. Evaluate on recordings not used for training.
+9. Configure matching LoRa settings on transmitter and receiver.
 10. Configure Blynk with the user's actual template/datastream settings.
-11. Deploy the nodes and monitor packet reception and classification behaviour.
+11. Deploy and monitor classification behaviour and packet reception.
 
-## What is deliberately not fabricated
+---
 
-This repository contains real source-code implementations and project documentation, but it does not invent experimental facts. In particular, it does not state an unverified:
+## 🛡️ Reproducibility & authenticity
 
-- Dataset size
-- Dataset source
-- Training accuracy
-- Validation accuracy
-- Precision/recall/F1 score
+This repository is intentionally conservative about experimental claims. It does **not** invent or silently assume:
+
+- Dataset size or source
+- Training/validation/test performance
 - LoRa range
 - Battery life
 - Field detection rate
-- GPIO wiring that has not been confirmed
-- Blynk template ID, token or Wi-Fi password
-- Trained model weights that have not actually been produced
+- Unverified GPIO wiring
+- Blynk credentials
+- Trained model weights that were not actually produced
 
-When these values are measured, replace the relevant documentation with the measured result and record the experiment conditions.
+When new measurements are available, document the dataset, split, preprocessing settings, model version and test conditions alongside the result.
 
-## Project documentation
+---
+
+## 📚 Documentation
 
 - `hardware/README.md` — hardware role and deployment notes
-- `hardware/components/components_list.md` — component-level bill of materials
-- `hardware/circuit/connection_guide.md` — connection and electrical checks
+- `hardware/components/components_list.md` — component list
+- `hardware/circuit/connection_guide.md` — connection guide
 - `ai_model/dataset_info.md` — dataset organization and labeling
-- `ai_model/preprocessing/preprocessing.py` — audio preprocessing implementation
-- `ai_model/training/train.py` — CNN training implementation
-- `ai_model/inference/inference.py` — single-file inference implementation
+- `ai_model/preprocessing/preprocessing.py` — audio preprocessing
+- `ai_model/training/train.py` — CNN training
+- `ai_model/inference/inference.py` — inference
 - `firmware/` — ESP32 LoRa transmitter/receiver firmware
 - `blynk/` — dashboard and configuration documentation
-- `documentation/project-materials.md` — supplied report/image evidence and attribution notes
-- `documentation/` — project documentation and references
-- `images/project-evidence.jpg` — visual evidence board assembled from supplied project images
+- `documentation/project-materials.md` — supplied report/image evidence notes
+- `images/` — original project visuals, organized by hardware, ML and Blynk
 
-## License
+---
 
-MIT License. See `LICENSE`.
+<div align="center">
+
+### 🌱 Sense → Classify → Communicate → Monitor
+
+*Built as a practical AI + IoT exploration for smarter pollination monitoring.*
+
+**MIT License** · See `LICENSE`
+
+</div>
