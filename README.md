@@ -2,6 +2,8 @@
 
 AI + IoT + LoRa based bee-pollination monitoring project for identifying acoustic bee activity and reporting field observations remotely.
 
+> **Project evidence:** This repository now includes a visual evidence board built from the supplied prototype/report images. See [`images/project-evidence.jpg`](images/project-evidence.jpg).
+
 ## Project purpose
 
 Pollinating insects are important to crop production, but direct continuous observation of bee activity over a field is difficult. This project uses acoustic sensing as a practical way to monitor activity around a selected observation point. An INMP441 MEMS microphone captures environmental sound, an ESP32 provides the embedded acquisition/control layer, and an SX1278 LoRa link transports compact classification data to a receiver. A CNN-based audio classifier separates **Bee Activity** from **Background Noise**.
@@ -88,6 +90,18 @@ The project is designed as a complete sensing-to-monitoring pipeline rather than
 | Blynk | Remote visualization and monitoring |
 
 The repository does not claim that the CNN is running natively on the ESP32 unless an embedded deployment of the trained model is separately added and validated. The supplied Python pipeline is the reference training/inference implementation.
+
+## Project evidence
+
+The supplied project materials contain prototype photographs and result figures. A compact, repository-friendly board is included here so visitors can see the physical implementation and software outputs without downloading the academic report.
+
+![Project evidence board](images/project-evidence.jpg)
+
+**Shown in the board:** hardware prototype, LCD bee-detection output, Blynk monitoring, training-accuracy curve, Mel-spectrogram and confusion matrix.
+
+For context on how these artifacts relate to the system, see [`documentation/project-materials.md`](documentation/project-materials.md).
+
+> **Evidence policy:** screenshots and plots are preserved as project artifacts. They are not presented as independently reproduced benchmarks. Final performance claims should be tied to a documented dataset, split, model version and test conditions.
 
 ## AI model
 
@@ -232,9 +246,11 @@ smart-pollination-monitoring/
 │       └── README.md
 ├── documentation/
 │   ├── README.md
+│   ├── project-materials.md
 │   └── references.md
 └── images/
-    └── README.md
+    ├── README.md
+    └── project-evidence.jpg
 ```
 
 ## Software setup
@@ -342,8 +358,9 @@ When these values are measured, replace the relevant documentation with the meas
 - `ai_model/inference/inference.py` — single-file inference implementation
 - `firmware/` — ESP32 LoRa transmitter/receiver firmware
 - `blynk/` — dashboard and configuration documentation
+- `documentation/project-materials.md` — supplied report/image evidence and attribution notes
 - `documentation/` — project documentation and references
-- `images/` — location for actual project photographs/figures
+- `images/project-evidence.jpg` — visual evidence board assembled from supplied project images
 
 ## License
 
