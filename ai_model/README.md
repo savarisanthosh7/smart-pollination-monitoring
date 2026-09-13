@@ -1,29 +1,44 @@
 # AI Model
 
-The AI subsystem classifies acoustic windows into two project classes: `Bee Activity` and `Background Noise`.
+The AI subsystem classifies environmental audio into two classes:
+
+- **Background Noise**
+- **Bee Activity**
 
 ## Pipeline
 
 ```text
-Audio
- ↓
-Noise reduction / normalization
- ↓
-Mel-spectrogram
- ↓
-128 × 128 input
- ↓
-CNN stage 1
- ↓
-CNN stage 2
- ↓
-CNN stage 3
- ↓
-Dense classifier
- ↓
-Softmax
- ↓
-Class + confidence
+WAV / supported audio
+        ↓
+16 kHz mono loading
+        ↓
+Amplitude normalization
+        ↓
+Spectral noise reduction
+        ↓
+128-band Mel-spectrogram
+        ↓
+128 × 128 fixed representation
+        ↓
+3 convolutional stages
+        ↓
+Global average pooling
+        ↓
+64-unit dense layer
+        ↓
+2-unit softmax
 ```
 
-The implementation is split into preprocessing, training and inference so each stage can be tested independently.
+## Source files
+
+- `preprocessing/preprocessing.py` — converts recordings into model-ready `.npy` spectrograms.
+- `training/train.py` — loads processed samples, creates the stratified split and trains the CNN.
+- `inference/inference.py` — applies the same preprocessing to a new recording and predicts its class.
+- `model/README.md` — describes generated model artifacts and their provenance.
+- `dataset_info.md` — defines the dataset organization and recording metadata.
+
+## Reproducibility
+
+Use the same preprocessing settings for training and inference. Record the dataset version, class counts, recording conditions, model configuration and evaluation metrics for every experiment.
+
+No performance metric in this directory should be treated as a measured result unless it is produced by an actual training/evaluation run.
