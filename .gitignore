@@ -1,0 +1,35 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+env/
+.pytest_cache/
+
+# Data and generated ML artifacts
+ai_model/dataset/
+ai_model/processed/
+*.wav
+*.mp3
+*.flac
+*.npy
+*.npz
+*.h5
+*.keras
+*.onnx
+
+# Secrets
+.env
+*.env
+secrets.*
+config.local.*
+
+# Arduino
+.arduino/
+
+# OS / IDE
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
